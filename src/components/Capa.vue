@@ -5,28 +5,30 @@
       <span>Dados Gerais sobre a Covid</span>
     </header>
 
-    <div class="conteudo-global" v-if="temDados">
-      <div class="content">
-        <div class="casos-global cont">
-          <h1>{{ data.cases.toLocaleString() }}</h1>
-          <span>casos</span>
-        </div>
+    <transition name="fade">
+      <div class="conteudo-global" v-if="temDados">
+        <div class="content">
+          <div class="casos-global cont">
+            <h1>{{ data.cases.toLocaleString() }}</h1>
+            <span>casos</span>
+          </div>
 
-        <div class="barr"></div>
+          <div class="barr"></div>
 
-        <div class="fatalidades-global cont">
-          <h1>{{ data.deaths.toLocaleString() }}</h1>
-          <span>mortes</span>
-        </div>
+          <div class="fatalidades-global cont">
+            <h1>{{ data.deaths.toLocaleString() }}</h1>
+            <span>mortes</span>
+          </div>
 
-        <div class="barr"></div>
+          <div class="barr"></div>
 
-        <div class="recuperados-global cont">
-          <h1>{{ data.recovered.toLocaleString() }}</h1>
-          <span>recuperados</span>
+          <div class="recuperados-global cont">
+            <h1>{{ data.recovered.toLocaleString() }}</h1>
+            <span>recuperados</span>
+          </div>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -44,20 +46,29 @@ export default {
     };
   },
   mounted() {
-    this.getInfoGlobal();
+    // this.getInfoGlobal();
+    this.getGlobalInfo();
   },
   methods: {
     getInfoGlobal() {
       axios.get(this.url).then((res) => {
-        if (res.status == 200)
-         {
+        if (res.status == 200) {
+          // this.temDados = true;
+          // this.data = res.data;
+          // this.cases = res.data.cases;
+          // this.deaths = res.data.deaths;
+          // this.recovered = res.data.recovered;
+        }
+      });
+    },
 
-          this.temDados = true;
-          this.data = res.data;
-          this.cases = res.data.cases;
-          this.deaths = res.data.deaths;
-          this.recovered = res.data.recovered;
-
+    getGlobalInfo() {
+      fetch(this.url, { methods: "GET", mode: "cors" }).then((res) => {
+        if (res.ok) {
+          res.json().then((dados) => {
+            this.data = dados;
+            this.temDados = true;
+          });
         }
       });
     },
@@ -66,6 +77,15 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 .hero {
   height: 100vh;
   background-color: black;
